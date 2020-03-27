@@ -13,16 +13,17 @@ library(tidyverse)
 library(rootSolve)
 library(mgcv)
   
-registerDoMC(4)  #change the 2 to your number of CPU cores
+registerDoMC(1)  #change the 2 to your number of CPU cores
 
 rm(list=ls(all=TRUE))
 
 # - - -
 # Set user-specific directory path and load datasets
-if(Sys.info()["user"]=="adamkuchars" | Sys.info()["user"]=="adamkucharski") {
-  setwd("~/Documents/GitHub/2020-nCov/stoch_model_V2_paper")
+setwd("/home/cdsw/stoch_model_V2_paper")
+#if(Sys.info()["user"]=="adamkuchars" | Sys.info()["user"]=="adamkucharski") {
+#  setwd("~/Documents/GitHub/2020-nCov/stoch_model_V2_paper")
   dropbox_path <- ""
-}
+#}
 
 # Load datasets, functions and parameters ----------------------------------------------
 
