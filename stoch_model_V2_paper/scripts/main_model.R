@@ -20,11 +20,8 @@ rm(list=ls(all=TRUE))
 # - - -
 # Set user-specific directory path and load datasets
 setwd("/home/cdsw/stoch_model_V2_paper")
-<<<<<<< HEAD
-#if(Sys.info()["user"]=="adamkuchars" | Sys.info()["user"]=="adamkucharski") {
-=======
+
 #if(Sys.info()["user"]=="ndunnage" | Sys.info()["user"]=="ndunnage") {
->>>>>>> b6dea844ee22dab5992d062e3eb32e4503fec764
 #  setwd("~/Documents/GitHub/2020-nCov/stoch_model_V2_paper")
   dropbox_path <- ""
 #}
