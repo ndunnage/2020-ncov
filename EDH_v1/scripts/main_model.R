@@ -1,6 +1,7 @@
 # nCoV stochastic model
 # Main script
 # Author: AJ Kucharski (2020)
+# Butchered by: Niel Dunnage (2020)
 
 # Set up libraries and paths ----------------------------------------------
 
@@ -12,7 +13,8 @@ library(coda)
 library(tidyverse)
 library(rootSolve)
 library(mgcv)
-  
+library(sparklyr)
+
 registerDoMC(1)  #change the 2 to your number of CPU cores
 
 rm(list=ls(all=TRUE))
@@ -20,26 +22,72 @@ rm(list=ls(all=TRUE))
 # - - -
 # Set user-specific directory path and load datasets
 setwd("/home/cdsw/stoch_model_V2_paper")
-
+# Set user-specifc hdfs directory path and load the datasets
+# load data from file in HDFS
+cases <- spark_read_csv(
+  sc = spark,
+  name = "cases",
+  path = "/user/ndunnage/ncov2020/cases/"
+)
+travel_data_mobs <- spark_read_csv(
+  sc = spark,
+  name = "travel_data_mobs",
+  path = "/user/ndunnage/ncov2020/data/connectivity_data_mobs.csv"
+)
+international_conf_data_in <- spark_read_csv(
+  sc = spark,
+  name = "travel_data_mobs",
+  path = "/user/ndunnage/ncov2020/data/international_case_data.csv"
+}
+international_onset_data_in <- spark_read_csv(
+  sc = spark,
+  name = "international_onset_data_in",
+  path = "/user/ndunnage/ncov2020/data/time_series_WHO_report.csv"
+}
+china_onset_data_in <- spark_read_csv(
+  sc = spark,
+  name = "china_onset_data_in",
+  path = "/user/ndunnage/ncov2020/data/time_series_data_bioRvix_Liu_et_al.csv"
+}
+wuhan_onset_data_in <- spark_read_csv(
+  sc = spark,
+  name = "wuhan_onset_data_in",
+  path = "/user/ndunnage/ncov2020/data/time_series_data_lancet_huang_et_al.csv"
+}
+wuhan_onset_2020_01_30 <- spark_read_csv(
+  sc = spark,
+  name = "wuhan_onset_2020_01_30",
+  path = "/user/ndunnage/ncov2020/data/time_series_data_qui_li_nejm_wuhan.csv"
+}
+wuhan_conf_data_in <- spark_read_csv(
+  sc = spark,
+  name = "wuhan_conf_data_in",
+  path = "/user/ndunnage/ncov2020/data/time_series_HKU_Wuhan.csv"
+}
+data_hubei_Feb <- spark_read_csv(
+  sc = spark,
+  name = "data_hubei_Feb",
+  path = "/user/ndunnage/ncov2020/data/hubei_confirmed_cases.csv"
+}
 #if(Sys.info()["user"]=="ndunnage" | Sys.info()["user"]=="ndunnage") {
 #  setwd("~/Documents/GitHub/2020-nCov/stoch_model_V2_paper")
-  dropbox_path <- ""
+#  dropbox_path <- ""
 #}
 
 # Load datasets, functions and parameters ----------------------------------------------
 
 # - - -
 # Load datasets
-travel_data_mobs <- read_csv(paste0(dropbox_path,"data/connectivity_data_mobs.csv"))
+#travel_data_mobs <- read_csv(paste0(dropbox_path,"data/connectivity_data_mobs.csv"))
 #travel_data_mobs <- read_csv(paste0(dropbox_path,"data/connectivity_data_worldpop.csv"))
-international_conf_data_in <- read_csv(paste0(dropbox_path,"data/international_case_data.csv"))
-international_onset_data_in <- read_csv(paste0(dropbox_path,"data/time_series_WHO_report.csv"))
-china_onset_data_in <- read_csv(paste0(dropbox_path,"data/time_series_data_bioRvix_Liu_et_al.csv"))
-wuhan_onset_data_in <- read_csv(paste0(dropbox_path,"data/time_series_data_lancet_huang_et_al.csv"))
-wuhan_onset_2020_01_30 <- read_csv(paste0(dropbox_path,"data/time_series_data_qui_li_nejm_wuhan.csv"))
-wuhan_conf_data_in <- read_csv(paste0(dropbox_path,"data/time_series_HKU_Wuhan.csv"))
+#international_conf_data_in <- read_csv(paste0(dropbox_path,"data/international_case_data.csv"))
+#international_onset_data_in <- read_csv(paste0(dropbox_path,"data/time_series_WHO_report.csv"))
+#china_onset_data_in <- read_csv(paste0(dropbox_path,"data/time_series_data_bioRvix_Liu_et_al.csv"))
+#wuhan_onset_data_in <- read_csv(paste0(dropbox_path,"data/time_series_data_lancet_huang_et_al.csv"))
+#wuhan_onset_2020_01_30 <- read_csv(paste0(dropbox_path,"data/time_series_data_qui_li_nejm_wuhan.csv"))
+#wuhan_conf_data_in <- read_csv(paste0(dropbox_path,"data/time_series_HKU_Wuhan.csv"))
 
-data_hubei_Feb <- read_csv(paste0(dropbox_path,"data/hubei_confirmed_cases.csv"))
+#data_hubei_Feb <- read_csv(paste0(dropbox_path,"data/hubei_confirmed_cases.csv"))
 
 case_data_in <- international_conf_data_in
 travel_data <- travel_data_mobs
