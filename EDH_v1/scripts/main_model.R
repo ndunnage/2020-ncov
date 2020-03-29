@@ -15,6 +15,9 @@ library(rootSolve)
 library(mgcv)
 library(sparklyr)
 
+spark <- spark_connect(master = "yarn",
+                      app_name = "cdsw-test")
+
 registerDoMC(1)  #change the 2 to your number of CPU cores
 
 rm(list=ls(all=TRUE))
@@ -38,37 +41,37 @@ international_conf_data_in <- spark_read_csv(
   sc = spark,
   name = "travel_data_mobs",
   path = "/user/ndunnage/ncov2020/data/international_case_data.csv"
-}
+)
 international_onset_data_in <- spark_read_csv(
   sc = spark,
   name = "international_onset_data_in",
   path = "/user/ndunnage/ncov2020/data/time_series_WHO_report.csv"
-}
+)
 china_onset_data_in <- spark_read_csv(
   sc = spark,
   name = "china_onset_data_in",
   path = "/user/ndunnage/ncov2020/data/time_series_data_bioRvix_Liu_et_al.csv"
-}
+)
 wuhan_onset_data_in <- spark_read_csv(
   sc = spark,
   name = "wuhan_onset_data_in",
   path = "/user/ndunnage/ncov2020/data/time_series_data_lancet_huang_et_al.csv"
-}
+)
 wuhan_onset_2020_01_30 <- spark_read_csv(
   sc = spark,
   name = "wuhan_onset_2020_01_30",
   path = "/user/ndunnage/ncov2020/data/time_series_data_qui_li_nejm_wuhan.csv"
-}
+)
 wuhan_conf_data_in <- spark_read_csv(
   sc = spark,
   name = "wuhan_conf_data_in",
   path = "/user/ndunnage/ncov2020/data/time_series_HKU_Wuhan.csv"
-}
+)
 data_hubei_Feb <- spark_read_csv(
   sc = spark,
   name = "data_hubei_Feb",
   path = "/user/ndunnage/ncov2020/data/hubei_confirmed_cases.csv"
-}
+)
 #if(Sys.info()["user"]=="ndunnage" | Sys.info()["user"]=="ndunnage") {
 #  setwd("~/Documents/GitHub/2020-nCov/stoch_model_V2_paper")
 #  dropbox_path <- ""
