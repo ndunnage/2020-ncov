@@ -10,8 +10,11 @@ To run the model agains the local dataset to test
 `stoch_model_V2_paper/srcipts/main_model.R`
 
 ## To run against using the EDH Yarn Cluster
-First load the data onto the Cluster
+First load the data onto the Cluster, open a Terminal
 `hdfs dfs -put data/* ncov2020/data/`
+
+Alternatively we could run directly in the R using the CDSW console
+`system("hdfs dfs -put data/* ncov2020/data/")`
 
 Note we'll switch over these directories to more current datasets as we get them loaded. We'll load the data into Impala tables
 

@@ -7,5 +7,5 @@ ipak <- function(pkg){
 
 # usage
 packages <- c("ggplot2", "plyr", "foreach", "doMC", "lubridate", "magrittr", "coda", "tidyverse", "rootSolve", "mgcv",
- "stringr", "sparklyr", "dplyr")
+ "stringr", "sparklyr", "implyer", "dplyr")
 ipak(packages)
