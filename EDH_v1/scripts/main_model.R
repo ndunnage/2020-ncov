@@ -17,6 +17,7 @@ library(sparklyr)
 
 spark <- spark_connect(master = "yarn",
                       app_name = "cdsw-test")
+
 registerDoMC(1)  #change the 2 to your number of CPU cores
 
 rm(list=ls(all=TRUE))
