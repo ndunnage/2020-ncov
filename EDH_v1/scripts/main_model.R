@@ -13,62 +13,73 @@ library(coda)
 library(tidyverse)
 library(rootSolve)
 library(mgcv)
+library(stringr)
 library(sparklyr)
+library(dplyr)
 
 spark <- spark_connect(master = "yarn",
                       app_name = "cdsw-test")
 
-registerDoMC(1)  #change the 2 to your number of CPU cores
+# registerDoMC(2)  #change the 2 to your number of CPU cores
 
 rm(list=ls(all=TRUE))
 
 # - - -
 # Set user-specific directory path and load datasets
-setwd("/home/cdsw/stoch_model_V2_paper")
+setwd("/home/cdsw/EDH_v1")
 # Set user-specifc hdfs directory path and load the datasets
 # load data from file in HDFS
-cases <- spark_read_csv(
-  sc = spark,
-  name = "cases",
-  path = "/user/ndunnage/ncov2020/cases/"
-)
+#cases <- spark_read_csv(
+#  sc = spark,
+#  dbtable = "u_ndunnage",
+#  name = "cases",
+#  path = "/user/ndunnage/ncov2020/cases/"
+#)
 travel_data_mobs <- spark_read_csv(
   sc = spark,
+  dbtable = "u_ndunnage",
   name = "travel_data_mobs",
   path = "/user/ndunnage/ncov2020/data/connectivity_data_mobs.csv"
 )
 international_conf_data_in <- spark_read_csv(
   sc = spark,
+  dbtable = "u_ndunnage",
   name = "travel_data_mobs",
   path = "/user/ndunnage/ncov2020/data/international_case_data.csv"
 )
 international_onset_data_in <- spark_read_csv(
   sc = spark,
+  dbtable = "u_ndunnage",
   name = "international_onset_data_in",
   path = "/user/ndunnage/ncov2020/data/time_series_WHO_report.csv"
 )
 china_onset_data_in <- spark_read_csv(
   sc = spark,
+  dbtable = "u_ndunnage",
   name = "china_onset_data_in",
   path = "/user/ndunnage/ncov2020/data/time_series_data_bioRvix_Liu_et_al.csv"
 )
 wuhan_onset_data_in <- spark_read_csv(
   sc = spark,
+  dbtable = "u_ndunnage",
   name = "wuhan_onset_data_in",
   path = "/user/ndunnage/ncov2020/data/time_series_data_lancet_huang_et_al.csv"
 )
 wuhan_onset_2020_01_30 <- spark_read_csv(
   sc = spark,
+  dbtable = "u_ndunnage",
   name = "wuhan_onset_2020_01_30",
   path = "/user/ndunnage/ncov2020/data/time_series_data_qui_li_nejm_wuhan.csv"
 )
 wuhan_conf_data_in <- spark_read_csv(
   sc = spark,
+  dbtable = "u_ndunnage",
   name = "wuhan_conf_data_in",
   path = "/user/ndunnage/ncov2020/data/time_series_HKU_Wuhan.csv"
 )
 data_hubei_Feb <- spark_read_csv(
   sc = spark,
+  dbtable = "u_ndunnage",
   name = "data_hubei_Feb",
   path = "/user/ndunnage/ncov2020/data/hubei_confirmed_cases.csv"
 )
@@ -104,7 +115,14 @@ source("R/plotting_functions.R")
 
 # - - -
 # Load model parameters
-thetaR_IC <- read_csv("inputs/theta_initial_conditions.csv")
+
+thetaR_IC <- spark_read_csv(
+  sc = spark,
+  dbtable = "u_ndunnage",
+  name = "theta_initial_conditions",
+  path = "/user/ndunnage/ncov2020/inputs/theta_initial_conditions.csv"
+)
+#thetaR_IC <- read_csv("inputs/theta_initial_conditions.csv")
 theta <- c( r0=as.numeric(thetaR_IC[thetaR_IC$param=="r0","value"]), # note this is only IC - SMC estimates this
             beta=NA,
             betavol=as.numeric(thetaR_IC[thetaR_IC$param=="betavol","value"]),
@@ -155,3 +173,4 @@ output_smc$lik
 # Run main outputs --------------------------------------------------------------
 
 source("R/outputs_main.R")
+spark_disconnect(spark)
